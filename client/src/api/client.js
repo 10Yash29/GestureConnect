@@ -1,4 +1,4 @@
-const BASE_URL = 'https://gesture-backend-wrn9.onrender.com';
+const BASE_URL = 'http://0.0.0.0:5000';
 
 const defaultOptions = {
   mode: 'cors',
