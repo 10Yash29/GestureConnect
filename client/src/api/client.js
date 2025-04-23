@@ -8,14 +8,14 @@ const BASE_URL = import.meta.env.VITE_API_BASE || window.location.origin;
  */
 async function apiRequest(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
-  
+
   try {
     // For FormData, don't set Content-Type, let the browser handle it
     const fetchOptions = {
       ...options,
       credentials: 'include',
     };
-    
+
     // For FormData, don't manually set Content-Type header
     // Let the browser handle it with the proper multipart/form-data boundary
     if (options.body instanceof FormData) {
@@ -23,7 +23,7 @@ async function apiRequest(endpoint, options = {}) {
       const headers = { ...options.headers };
       delete headers['Content-Type'];
       fetchOptions.headers = headers;
-      
+
       // Log the FormData content for debugging
       if (process.env.NODE_ENV === 'development') {
         console.log('FormData contents:');
@@ -37,9 +37,9 @@ async function apiRequest(endpoint, options = {}) {
         }
       }
     }
-    
+
     const response = await fetch(url, fetchOptions);
-    
+
     if (!response.ok) {
       let errorMessage;
       try {
@@ -57,15 +57,15 @@ async function apiRequest(endpoint, options = {}) {
       }
       throw new Error(errorMessage);
     }
-    
+
     // Get content type and check if empty response
     const contentType = response.headers.get('content-type');
-    
+
     // For empty responses or responses without content-type, return empty object
     if (response.status === 204 || !contentType) {
       return {};
     }
-    
+
     // For JSON responses
     if (contentType && contentType.includes('application/json')) {
       try {
@@ -75,12 +75,12 @@ async function apiRequest(endpoint, options = {}) {
         return {}; // Return empty object on parse error
       }
     }
-    
+
     // For other content types, try to parse as JSON, but return as text if that fails
     try {
       const text = await response.text();
       if (!text) return {}; // Empty response
-      
+
       try {
         return JSON.parse(text);
       } catch (e) {
@@ -148,11 +148,21 @@ export async function trainModel() {
  * @returns {Promise} - Prediction response
  */
 export async function predictGesture(formData) {
-  // Ensure no Content-Type header is set when sending FormData
-  // This allows the browser to set the correct Content-Type with boundary
-  return apiRequest('/predict', {
-    method: 'POST',
-    body: formData,
-    headers: {}, // Explicitly empty to ensure no content-type is set
-  });
+  try {
+    const response = await fetch('/api/predict', {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API request failed:', error);
+    return { gesture: 'unknown', binding: 'none', user: 'unknown' };
+  }
 }

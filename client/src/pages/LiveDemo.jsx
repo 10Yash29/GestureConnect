@@ -16,11 +16,11 @@ const LiveDemo = () => {
   const [predictions, setPredictions] = useState([]);
   const webcamRef = useRef(null);
   const captureTimerRef = useRef(null);
-  
+
   useEffect(() => {
     // Start capturing when component mounts
     startCapturing();
-    
+
     // Clean up when component unmounts
     return () => {
       if (captureTimerRef.current) {
@@ -28,33 +28,33 @@ const LiveDemo = () => {
       }
     };
   }, []);
-  
+
   useEffect(() => {
     // Restart capturing when interval changes
     if (isCapturing) {
       startCapturing();
     }
   }, [captureInterval]);
-  
+
   const startCapturing = () => {
     // Clear any existing interval
     if (captureTimerRef.current) {
       clearInterval(captureTimerRef.current);
     }
-    
+
     // Set up new interval
     captureTimerRef.current = setInterval(() => {
       captureAndPredict();
     }, captureInterval * 1000);
   };
-  
+
   const stopCapturing = () => {
     if (captureTimerRef.current) {
       clearInterval(captureTimerRef.current);
       captureTimerRef.current = null;
     }
   };
-  
+
   const toggleCapturing = () => {
     if (isCapturing) {
       stopCapturing();
@@ -63,73 +63,73 @@ const LiveDemo = () => {
     }
     setIsCapturing(!isCapturing);
   };
-  
+
   const captureAndPredict = async () => {
     if (!webcamRef.current || !webcamRef.current.getScreenshot) {
       return;
     }
-    
+
     try {
       // Capture image from webcam
       const screenshot = webcamRef.current.getScreenshot();
       if (!screenshot) return;
-      
+
       // Convert data URL to Blob
       const res = await fetch(screenshot);
       const blob = await res.blob();
-      
+
       // Create file from blob
       const file = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
-      
+
       // Create FormData
       const formData = new FormData();
       formData.append('file', file);
-      
+
       // Make prediction request
       const result = await predictGesture(formData);
-      
+
       // Update prediction and prediction history
       setPrediction({
         gesture: result.gesture || 'unknown',
         binding: result.binding || 'none',
         user: result.user || 'unknown'
       });
-      
+
       // Add to prediction history with timestamp
       const newPrediction = {
         gesture: result.gesture || 'unknown',
         timestamp: new Date()
       };
-      
+
       setPredictions(prev => [newPrediction, ...prev].slice(0, 10));
     } catch (error) {
       console.error('Prediction failed:', error);
     }
   };
-  
+
   const getTimeAgo = (timestamp) => {
     const seconds = Math.floor((new Date() - timestamp) / 1000);
     return `${seconds}s ago`;
   };
-  
+
   const handleIntervalChange = (e) => {
     setCaptureInterval(Number(e.target.value));
   };
-  
+
   const handleConfidenceChange = (e) => {
     setConfidenceThreshold(Number(e.target.value));
   };
-  
+
   const handleResetConfig = () => {
     setCaptureInterval(2);
     setConfidenceThreshold(70);
   };
-  
+
   return (
     <section className={styles.container}>
       <div className={styles.card}>
         <h2 className={styles.title}>Live Demo</h2>
-        
+
         <div className={styles.content}>
           <div className={styles.webcamContainer}>
             <div className={styles.webcamWrapper}>
@@ -142,13 +142,13 @@ const LiveDemo = () => {
                 height={600}
                 className={styles.webcam}
               />
-              
+
               {loading && (
                 <div className={styles.loading}>
                   <div className={styles.spinner}></div>
                 </div>
               )}
-              
+
               <div className={styles.overlay}>
                 <div className={styles.predictionContainer}>
                   <div className={styles.predictionItem}>
@@ -167,7 +167,7 @@ const LiveDemo = () => {
               </div>
             </div>
           </div>
-          
+
           <div className={styles.controls}>
             <div className={styles.captureInfo}>
               <div className={styles.captureInfoText}>
@@ -183,7 +183,7 @@ const LiveDemo = () => {
               </button>
             </div>
           </div>
-          
+
           <div className={styles.grid}>
             <div className={styles.predictions}>
               <h3 className={styles.sectionTitle}>Recent Predictions</h3>
@@ -205,7 +205,7 @@ const LiveDemo = () => {
                 )}
               </div>
             </div>
-            
+
             <div className={styles.configuration}>
               <h3 className={styles.sectionTitle}>System Configuration</h3>
               <div className={styles.configOptions}>
@@ -228,7 +228,7 @@ const LiveDemo = () => {
                     <span>5s</span>
                   </div>
                 </div>
-                
+
                 <div className={styles.configOption}>
                   <label htmlFor="prediction-confidence" className={styles.configLabel}>
                     Prediction Confidence Threshold
@@ -248,7 +248,7 @@ const LiveDemo = () => {
                     <span>High</span>
                   </div>
                 </div>
-                
+
                 <div className={styles.resetConfig}>
                   <button
                     type="button"
