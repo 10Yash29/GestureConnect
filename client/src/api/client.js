@@ -1,14 +1,4 @@
-const BASE_URL = 'https://gesture-backend-wrn9.onrender.com';
-
-const defaultOptions = {
-  mode: 'cors',
-  credentials: 'omit',
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Origin': window.location.origin
-  }
-};
+const BASE_URL = import.meta.env.VITE_API_BASE || window.location.origin;
 
 /**
  * Handles API requests with error handling
@@ -18,14 +8,14 @@ const defaultOptions = {
  */
 async function apiRequest(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
-
+  
   try {
     // For FormData, don't set Content-Type, let the browser handle it
     const fetchOptions = {
-      ...defaultOptions,
       ...options,
+      credentials: 'include',
     };
-
+    
     // For FormData, don't manually set Content-Type header
     // Let the browser handle it with the proper multipart/form-data boundary
     if (options.body instanceof FormData) {
@@ -33,7 +23,7 @@ async function apiRequest(endpoint, options = {}) {
       const headers = { ...options.headers };
       delete headers['Content-Type'];
       fetchOptions.headers = headers;
-
+      
       // Log the FormData content for debugging
       if (process.env.NODE_ENV === 'development') {
         console.log('FormData contents:');
@@ -47,54 +37,64 @@ async function apiRequest(endpoint, options = {}) {
         }
       }
     }
-
-    try {
-      const response = await fetch(url, fetchOptions);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Get content type and check if empty response
-      const contentType = response.headers.get('content-type');
-
-      // For empty responses or responses without content-type, return empty object
-      if (response.status === 204 || !contentType) {
-        return {};
-      }
-
-      // For JSON responses
-      if (contentType && contentType.includes('application/json')) {
-        try {
-          return await response.json();
-        } catch (e) {
-          console.error('Error parsing JSON response:', e);
-          return {}; // Return empty object on parse error
-        }
-      }
-
-      // For other content types, try to parse as JSON, but return as text if that fails
+    
+    const response = await fetch(url, fetchOptions);
+    
+    if (!response.ok) {
+      let errorMessage;
       try {
-        const text = await response.text();
-        if (!text) return {}; // Empty response
-
+        const errorText = await response.text();
+        // Try to parse as JSON first
         try {
-          return JSON.parse(text);
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.message || errorJson.error || errorText;
         } catch (e) {
-          // Not JSON, return the text if it's short enough
-          if (text.length < 100) {
-            return { message: text };
-          } else {
-            console.error('Response is not JSON and too large to return as message');
-            return { success: true }; // Assume success if we got an OK status
-          }
+          // If not JSON, use the text
+          errorMessage = errorText || `HTTP error! status: ${response.status}`;
         }
       } catch (e) {
-        console.error('Error reading response:', e);
-        return {}; // Return empty object on error
+        errorMessage = `HTTP error! status: ${response.status}`;
       }
-    } catch (error) {
-      console.error(`API request failed: ${error.message}`);
-      throw error;
+      throw new Error(errorMessage);
+    }
+    
+    // Get content type and check if empty response
+    const contentType = response.headers.get('content-type');
+    
+    // For empty responses or responses without content-type, return empty object
+    if (response.status === 204 || !contentType) {
+      return {};
+    }
+    
+    // For JSON responses
+    if (contentType && contentType.includes('application/json')) {
+      try {
+        return await response.json();
+      } catch (e) {
+        console.error('Error parsing JSON response:', e);
+        return {}; // Return empty object on parse error
+      }
+    }
+    
+    // For other content types, try to parse as JSON, but return as text if that fails
+    try {
+      const text = await response.text();
+      if (!text) return {}; // Empty response
+      
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        // Not JSON, return the text if it's short enough
+        if (text.length < 100) {
+          return { message: text };
+        } else {
+          console.error('Response is not JSON and too large to return as message');
+          return { success: true }; // Assume success if we got an OK status
+        }
+      }
+    } catch (e) {
+      console.error('Error reading response:', e);
+      return {}; // Return empty object on error
     }
   } catch (error) {
     console.error(`API request failed: ${error.message}`);
