@@ -10,6 +10,9 @@ import RegisterFace from "./pages/RegisterFace";
 import CollectGesture from "./pages/CollectGesture";
 import Train from "./pages/Train";
 import LiveDemo from "./pages/LiveDemo";
+import AuthPage from "./pages/auth-page";
+import { AuthProvider } from "./hooks/use-auth";
+import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
   return (
@@ -18,10 +21,23 @@ function Router() {
       <main className="pt-16">
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/register-face" component={RegisterFace} />
-          <Route path="/collect-gesture" component={CollectGesture} />
-          <Route path="/train-model" component={Train} />
+          <ProtectedRoute 
+            path="/register-face" 
+            requireAdmin={true} 
+            component={RegisterFace} 
+          />
+          <ProtectedRoute 
+            path="/collect-gesture" 
+            requireAdmin={true} 
+            component={CollectGesture} 
+          />
+          <ProtectedRoute 
+            path="/train-model" 
+            requireAdmin={true} 
+            component={Train} 
+          />
           <Route path="/live-demo" component={LiveDemo} />
+          <Route path="/auth" component={AuthPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -32,10 +48,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

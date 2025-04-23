@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import styles from '../styles/Navbar.module.css';
+import { useAuth } from '../hooks/use-auth';
 
 const Navbar = () => {
   const [location] = useLocation();
