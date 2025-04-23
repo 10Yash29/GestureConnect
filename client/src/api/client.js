@@ -20,7 +20,22 @@ async function apiRequest(endpoint, options = {}) {
       throw new Error(errorText || `HTTP error! status: ${response.status}`);
     }
     
-    return await response.json();
+    const contentType = response.headers.get('content-type');
+    
+    // Check if the response is JSON
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    } else {
+      // If not JSON, get the text and try to parse it as JSON
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        // If parsing fails, it's not JSON, so either return the text or an error
+        console.error('Response is not JSON:', text);
+        throw new Error('Server returned a non-JSON response');
+      }
+    }
   } catch (error) {
     console.error(`API request failed: ${error.message}`);
     throw error;

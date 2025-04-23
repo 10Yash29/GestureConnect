@@ -72,10 +72,13 @@ const RegisterFace = () => {
       return;
     }
     
-    if (!file) {
-      setError(inputMethod === 'upload' 
-               ? 'Please upload an image'
-               : 'Please capture a photo with your webcam');
+    if (inputMethod === 'upload' && !file) {
+      setError('Please upload an image');
+      return;
+    }
+    
+    if (inputMethod === 'webcam' && captures.length === 0) {
+      setError('Please capture a photo with your webcam');
       return;
     }
     
@@ -83,9 +86,20 @@ const RegisterFace = () => {
     setError('');
     
     try {
+      // Ensure the file is properly named with an extension
+      // This is important for the server to identify the file type
+      let fileToSend = file;
+      
+      // If we're using webcam, make sure the file has the right name and mime type
+      if (inputMethod === 'webcam') {
+        // Create a new file with explicit MIME type and filename
+        const blob = await fetch(captures[captures.length - 1].preview).then(r => r.blob());
+        fileToSend = new File([blob], 'webcam_capture.jpg', { type: 'image/jpeg' });
+      }
+      
       const formData = new FormData();
       formData.append('username', username);
-      formData.append('file', file);
+      formData.append('file', fileToSend);
       
       const response = await registerFace(formData);
       
@@ -193,7 +207,9 @@ const RegisterFace = () => {
             <button
               type="submit"
               className={styles.button}
-              disabled={isSubmitting || !file}
+              disabled={isSubmitting || 
+                       (inputMethod === 'upload' && !file) || 
+                       (inputMethod === 'webcam' && captures.length === 0)}
             >
               {isSubmitting ? 'Registering...' : 'Register Face'}
             </button>
