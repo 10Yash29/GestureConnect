@@ -2,6 +2,7 @@ const BASE_URL = 'https://gesture-backend-wrn9.onrender.com';
 
 const defaultOptions = {
   mode: 'cors',
+  credentials: 'omit',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
