@@ -1,4 +1,4 @@
-const BASE_URL = `${window.location.origin}/api`;
+const BASE_URL = 'https://gesture-backend-wrn9.onrender.com';
 
 const defaultOptions = {
   mode: 'cors',
