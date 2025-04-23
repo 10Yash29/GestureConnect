@@ -1,0 +1,96 @@
+You are going to build a **complete React-JS (Vite) front-end** for an already-running FastAPI backend that recognises faces & hand-gestures.
+
+──────────────────────────────────────────────────────────────
+🌐  BACKEND (already deployed – do **NOT** code it here)
+──────────────────────────────────────────────────────────────
+Base URL:  <YOUR-API-BASE>   (e.g. https://gesture-system.onrender.com)
+
+●  POST /register_face
+    Form-fields:
+      • username   (text)
+      • file       (image/jpeg or png)
+    Response:  { "status":"ok", "user":"…" }
+
+●  POST /collect_gesture
+      • gesture_name  (text)
+      • binding       (text, e.g. "space")
+      • file          (image/jpeg/png of hand)
+    Response: { "status":"collected", "gesture":"…" }
+
+●  POST /train_model
+      no body.  Response { "status":"training complete" }
+
+●  POST /predict
+      • file (image/jpeg/png)
+    Response { "gesture":"…", "binding":"…" }
+
+(The backend already stores faces & key-points under /data, does augmentation,
+re-trains and overwrites models.)
+
+──────────────────────────────────────────────────────────────
+🎯  WHAT TO BUILD (front-end)
+──────────────────────────────────────────────────────────────
+Use **React 18 + Vite**, plain CSS modules (no Tailwind, no CSS-in-JS).  
+Use Fetch API (not Axios) and functional components + hooks.
+
+📁  File / folder structure you must output
+│  package.json           (with vite, react, react-dom)
+│  vite.config.js
+│  index.html
+└─ src/
+   │  main.jsx
+   │  App.jsx
+   ├─ api/
+   │     client.js        (wraps fetch; base URL from env)
+   ├─ pages/
+   │     Home.jsx
+   │     RegisterFace.jsx
+   │     CollectGesture.jsx
+   │     Train.jsx
+   ├─ components/
+   │     Navbar.jsx
+   │     UploadImage.jsx  (reusable drag-drop or file-picker)
+   │     WebcamPreview.jsx
+   └─ styles/
+         globals.css
+         …module.css per component
+
+🖥️  Pages / UX
+1. **Home**  
+   · Simple hero, short steps list, link buttons to the three actions below.
+
+2. **Register Face**  
+   · Username <input>, UploadImage, Preview thumbnail.  
+   · POST to /register_face; show success or error toast.
+
+3. **Collect Gesture**  
+   · Fields: gesture name, key binding, UploadImage *OR* live-webcam capture.  
+   · On submit call /collect_gesture.  Display “👍 saved #n samples”.
+
+4. **Train Model**  
+   · “Start training” button POSTs /train_model.  
+   · Disable button & show spinner while awaiting response.  
+   · Show green check when finished.
+
+5. **Live Demo** (optional but bonus)  
+   · WebcamPreview streaming every 1-2 s frame → /predict.  
+   · Overlay predicted gesture & binding.
+
+🔑  Environment
+‣  Use Vite env var:  `VITE_API_BASE` (fallback to window.location.origin).  
+‣  Package scripts: `npm run dev` (vite), `npm run build`, `npm run preview`.
+
+🎨  CSS
+‣  Light theme, centred max-width container, responsive flex/column.  
+‣  Navbar fixed top, links using <NavLink> from react-router-dom.
+
+──────────────────────────────────────────────────────────────
+✅  ACCEPTANCE CHECKLIST
+──────────────────────────────────────────────────────────────
+□ `npm install && npm run dev` starts Vite with no errors.  
+□ All routes work (look up env base).  
+□ Successful API replies render green alerts; failures red.  
+□ No Tailwind / external UI kits – just clean CSS.  
+□ Code is split by pages & reusable components as listed.
+
+Generate every file with full content. No prose explanations – only actual code blocks with correct filenames.
