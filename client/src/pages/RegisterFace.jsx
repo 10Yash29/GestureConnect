@@ -30,13 +30,24 @@ const RegisterFace = () => {
   };
   
   const handleCaptureFromWebcam = (capturedFile, previewUrl) => {
-    setFile(capturedFile);
-    setCaptures([...captures, { file: capturedFile, preview: previewUrl }]);
+    // Store both the file and preview URL
+    const captureData = { file: capturedFile, preview: previewUrl };
     
-    // Use the last capture
+    // Set as current file and add to captures array
+    setFile(capturedFile);
+    setCaptures(prevCaptures => [...prevCaptures, captureData]);
+    
+    // Ensure we're in webcam mode
     setInputMethod('webcam');
-    // Clear any uploaded file
+    
+    // Clear any uploaded file preview
     setPreview('');
+    
+    console.log('Captured webcam image:', 
+      capturedFile.name, 
+      capturedFile.type, 
+      capturedFile.size, 
+      'bytes');
   };
   
   const handleRemoveCapture = (index) => {
@@ -90,24 +101,18 @@ const RegisterFace = () => {
       // This is important for the server to identify the file type
       let fileToSend = file;
       
-      // If we're using webcam, make sure the file has the right name and mime type
+      // For webcam captures, we already have a properly formatted file from WebcamPreview
       if (inputMethod === 'webcam' && captures.length > 0) {
         try {
-          // First try to use the file directly if it exists
-          if (captures[captures.length - 1].file instanceof File) {
-            fileToSend = captures[captures.length - 1].file;
-            // Ensure the file has the correct extension and mime type
-            const renamedFile = new File(
-              [fileToSend], 
-              'webcam_capture.jpg', 
-              { type: 'image/jpeg' }
-            );
-            fileToSend = renamedFile;
+          // Use the latest capture
+          const latestCapture = captures[captures.length - 1];
+          
+          if (latestCapture.file instanceof File) {
+            // The file from WebcamPreview component should already be correctly formatted
+            fileToSend = latestCapture.file;
+            console.log("Using webcam file:", fileToSend.name, fileToSend.type, fileToSend.size);
           } else {
-            // Fallback to creating a file from the preview URL
-            const response = await fetch(captures[captures.length - 1].preview);
-            const blob = await response.blob();
-            fileToSend = new File([blob], 'webcam_capture.jpg', { type: 'image/jpeg' });
+            throw new Error("Invalid webcam capture data");
           }
         } catch (error) {
           console.error("Error preparing webcam image:", error);

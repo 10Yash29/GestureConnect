@@ -16,12 +16,26 @@ async function apiRequest(endpoint, options = {}) {
       credentials: 'include',
     };
     
-    // If we're submitting FormData, ensure the Content-Type is not manually set
+    // For FormData, don't manually set Content-Type header
+    // Let the browser handle it with the proper multipart/form-data boundary
     if (options.body instanceof FormData) {
-      fetchOptions.headers = {
-        ...options.headers,
-        // Explicitly removing Content-Type for FormData
-      };
+      // Create a new headers object without the Content-Type
+      const headers = { ...options.headers };
+      delete headers['Content-Type'];
+      fetchOptions.headers = headers;
+      
+      // Log the FormData content for debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.log('FormData contents:');
+        for (const pair of options.body.entries()) {
+          const [key, value] = pair;
+          if (value instanceof File) {
+            console.log(`${key}: File(${value.name}, ${value.type}, ${value.size} bytes)`);
+          } else {
+            console.log(`${key}: ${value}`);
+          }
+        }
+      }
     }
     
     const response = await fetch(url, fetchOptions);
