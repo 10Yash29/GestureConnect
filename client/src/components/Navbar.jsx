@@ -33,12 +33,10 @@ const Navbar = () => {
           
           <div className={styles.desktopLinks}>
             {navLinks.map((link) => (
-              <Link key={link.path} href={link.path}>
-                <a 
-                  className={`${styles.navLink} ${isActive(link.path) ? styles.active : ''}`}
-                >
-                  {link.label}
-                </a>
+              <Link key={link.path} href={link.path}
+                className={`${styles.navLink} ${isActive(link.path) ? styles.active : ''}`}
+              >
+                {link.label}
               </Link>
             ))}
           </div>
@@ -58,13 +56,13 @@ const Navbar = () => {
       <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
         <div className={styles.mobileMenuLinks}>
           {navLinks.map((link) => (
-            <Link key={link.path} href={link.path}>
-              <a 
-                className={`${styles.mobileLink} ${isActive(link.path) ? styles.mobileActive : ''}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </a>
+            <Link 
+              key={link.path} 
+              href={link.path}
+              className={`${styles.mobileLink} ${isActive(link.path) ? styles.mobileActive : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {link.label}
             </Link>
           ))}
         </div>
