@@ -1,5 +1,15 @@
 const BASE_URL = import.meta.env.VITE_API_BASE || 'https://gesture-backend-wrn9.onrender.com';
 
+// Add CORS headers to all requests
+const defaultOptions = {
+  mode: 'cors',
+  credentials: 'include',
+  headers: {
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  }
+};
+
 /**
  * Handles API requests with error handling
  * @param {string} endpoint - The API endpoint
@@ -12,8 +22,8 @@ async function apiRequest(endpoint, options = {}) {
   try {
     // For FormData, don't set Content-Type, let the browser handle it
     const fetchOptions = {
+      ...defaultOptions,
       ...options,
-      credentials: 'include',
     };
 
     // For FormData, don't manually set Content-Type header
