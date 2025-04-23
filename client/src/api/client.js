@@ -10,31 +10,77 @@ async function apiRequest(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
   
   try {
-    const response = await fetch(url, {
+    // For FormData, don't set Content-Type, let the browser handle it
+    const fetchOptions = {
       ...options,
       credentials: 'include',
-    });
+    };
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || `HTTP error! status: ${response.status}`);
+    // If we're submitting FormData, ensure the Content-Type is not manually set
+    if (options.body instanceof FormData) {
+      fetchOptions.headers = {
+        ...options.headers,
+        // Explicitly removing Content-Type for FormData
+      };
     }
     
+    const response = await fetch(url, fetchOptions);
+    
+    if (!response.ok) {
+      let errorMessage;
+      try {
+        const errorText = await response.text();
+        // Try to parse as JSON first
+        try {
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.message || errorJson.error || errorText;
+        } catch (e) {
+          // If not JSON, use the text
+          errorMessage = errorText || `HTTP error! status: ${response.status}`;
+        }
+      } catch (e) {
+        errorMessage = `HTTP error! status: ${response.status}`;
+      }
+      throw new Error(errorMessage);
+    }
+    
+    // Get content type and check if empty response
     const contentType = response.headers.get('content-type');
     
-    // Check if the response is JSON
+    // For empty responses or responses without content-type, return empty object
+    if (response.status === 204 || !contentType) {
+      return {};
+    }
+    
+    // For JSON responses
     if (contentType && contentType.includes('application/json')) {
-      return await response.json();
-    } else {
-      // If not JSON, get the text and try to parse it as JSON
+      try {
+        return await response.json();
+      } catch (e) {
+        console.error('Error parsing JSON response:', e);
+        return {}; // Return empty object on parse error
+      }
+    }
+    
+    // For other content types, try to parse as JSON, but return as text if that fails
+    try {
       const text = await response.text();
+      if (!text) return {}; // Empty response
+      
       try {
         return JSON.parse(text);
       } catch (e) {
-        // If parsing fails, it's not JSON, so either return the text or an error
-        console.error('Response is not JSON:', text);
-        throw new Error('Server returned a non-JSON response');
+        // Not JSON, return the text if it's short enough
+        if (text.length < 100) {
+          return { message: text };
+        } else {
+          console.error('Response is not JSON and too large to return as message');
+          return { success: true }; // Assume success if we got an OK status
+        }
       }
+    } catch (e) {
+      console.error('Error reading response:', e);
+      return {}; // Return empty object on error
     }
   } catch (error) {
     console.error(`API request failed: ${error.message}`);
@@ -48,9 +94,12 @@ async function apiRequest(endpoint, options = {}) {
  * @returns {Promise} - Registration response
  */
 export async function registerFace(formData) {
+  // Ensure no Content-Type header is set when sending FormData
+  // This allows the browser to set the correct Content-Type with boundary
   return apiRequest('/register_face', {
     method: 'POST',
     body: formData,
+    headers: {}, // Explicitly empty to ensure no content-type is set
   });
 }
 
@@ -60,9 +109,12 @@ export async function registerFace(formData) {
  * @returns {Promise} - Collection response
  */
 export async function collectGesture(formData) {
+  // Ensure no Content-Type header is set when sending FormData
+  // This allows the browser to set the correct Content-Type with boundary
   return apiRequest('/collect_gesture', {
     method: 'POST',
     body: formData,
+    headers: {}, // Explicitly empty to ensure no content-type is set
   });
 }
 
@@ -82,8 +134,11 @@ export async function trainModel() {
  * @returns {Promise} - Prediction response
  */
 export async function predictGesture(formData) {
+  // Ensure no Content-Type header is set when sending FormData
+  // This allows the browser to set the correct Content-Type with boundary
   return apiRequest('/predict', {
     method: 'POST',
     body: formData,
+    headers: {}, // Explicitly empty to ensure no content-type is set
   });
 }

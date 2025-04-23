@@ -91,10 +91,28 @@ const RegisterFace = () => {
       let fileToSend = file;
       
       // If we're using webcam, make sure the file has the right name and mime type
-      if (inputMethod === 'webcam') {
-        // Create a new file with explicit MIME type and filename
-        const blob = await fetch(captures[captures.length - 1].preview).then(r => r.blob());
-        fileToSend = new File([blob], 'webcam_capture.jpg', { type: 'image/jpeg' });
+      if (inputMethod === 'webcam' && captures.length > 0) {
+        try {
+          // First try to use the file directly if it exists
+          if (captures[captures.length - 1].file instanceof File) {
+            fileToSend = captures[captures.length - 1].file;
+            // Ensure the file has the correct extension and mime type
+            const renamedFile = new File(
+              [fileToSend], 
+              'webcam_capture.jpg', 
+              { type: 'image/jpeg' }
+            );
+            fileToSend = renamedFile;
+          } else {
+            // Fallback to creating a file from the preview URL
+            const response = await fetch(captures[captures.length - 1].preview);
+            const blob = await response.blob();
+            fileToSend = new File([blob], 'webcam_capture.jpg', { type: 'image/jpeg' });
+          }
+        } catch (error) {
+          console.error("Error preparing webcam image:", error);
+          throw new Error("Failed to prepare webcam image. Please try again or use the upload option.");
+        }
       }
       
       const formData = new FormData();
