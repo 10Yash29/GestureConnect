@@ -40,6 +40,7 @@
 
 .desktopLinks {
   display: none;
+  align-items: center;
 }
 
 .navLink {
@@ -113,6 +114,55 @@
   background-color: var(--color-neutral-100);
   color: var(--color-neutral-900);
   border-left-color: var(--color-primary);
+}
+
+.authLinks {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--color-neutral-200);
+}
+
+.username {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-neutral-800);
+  margin-right: 0.75rem;
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+.logoutBtn:hover {
+  color: var(--color-primary-dark);
+}
+
+.mobileUsername {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: var(--color-neutral-800);
+  background-color: var(--color-neutral-100);
+  margin-top: 0.5rem;
+}
+
+.mobileLogoutBtn {
+  color: var(--color-primary);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobileLogoutBtn:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-primary-dark);
 }
 
 @media (min-width: 640px) {

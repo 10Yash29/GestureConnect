@@ -6,18 +6,33 @@ import { useAuth } from '../hooks/use-auth';
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logoutMutation } = useAuth();
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
   
-  const navLinks = [
+  // Define base links that all users can see
+  const baseLinks = [
     { path: '/', label: 'Home' },
-    { path: '/register-face', label: 'Register Face' },
-    { path: '/collect-gesture', label: 'Collect Gesture' },
-    { path: '/train-model', label: 'Train Model' },
     { path: '/live-demo', label: 'Live Demo' }
   ];
+  
+  // Admin-only links
+  const adminLinks = [
+    { path: '/register-face', label: 'Register Face' },
+    { path: '/collect-gesture', label: 'Collect Gesture' },
+    { path: '/train-model', label: 'Train Model' }
+  ];
+  
+  // Combine links based on user role
+  const navLinks = user && user.isAdmin
+    ? [...baseLinks, ...adminLinks]
+    : baseLinks;
+  
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
   
   const isActive = (path) => {
     return location === path;
@@ -40,6 +55,28 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
+            
+            {user ? (
+              <div className={styles.authLinks}>
+                <span className={styles.username}>
+                  {user.username} {user.isAdmin && '(Admin)'}
+                </span>
+                <button 
+                  onClick={handleLogout} 
+                  className={`${styles.navLink} ${styles.logoutBtn}`}
+                  disabled={logoutMutation.isPending}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link 
+                href="/auth" 
+                className={`${styles.navLink} ${isActive('/auth') ? styles.active : ''}`}
+              >
+                Login
+              </Link>
+            )}
           </div>
           
           <button 
@@ -66,6 +103,29 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          
+          {user ? (
+            <>
+              <div className={styles.mobileUsername}>
+                {user.username} {user.isAdmin && '(Admin)'}
+              </div>
+              <button 
+                onClick={handleLogout} 
+                className={`${styles.mobileLink} ${styles.mobileLogoutBtn}`}
+                disabled={logoutMutation.isPending}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link 
+              href="/auth" 
+              className={`${styles.mobileLink} ${isActive('/auth') ? styles.mobileActive : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>
