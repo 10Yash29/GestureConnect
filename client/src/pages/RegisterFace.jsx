@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import UploadImage from '../components/UploadImage';
+import WebcamPreview from '../components/WebcamPreview';
 import { registerFace } from '../api/client';
 import styles from '../styles/RegisterFace.module.css';
 
@@ -10,6 +11,9 @@ const RegisterFace = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [inputMethod, setInputMethod] = useState('upload'); // 'upload' or 'webcam'
+  const [captures, setCaptures] = useState([]);
+  const webcamRef = useRef(null);
   
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -18,6 +22,46 @@ const RegisterFace = () => {
   const handleFileChange = (uploadedFile, previewUrl) => {
     setFile(uploadedFile);
     setPreview(previewUrl);
+    
+    // If we upload a file, switch to upload mode
+    setInputMethod('upload');
+    // Clear any webcam captures
+    setCaptures([]);
+  };
+  
+  const handleCaptureFromWebcam = (capturedFile, previewUrl) => {
+    setFile(capturedFile);
+    setCaptures([...captures, { file: capturedFile, preview: previewUrl }]);
+    
+    // Use the last capture
+    setInputMethod('webcam');
+    // Clear any uploaded file
+    setPreview('');
+  };
+  
+  const handleRemoveCapture = (index) => {
+    const newCaptures = [...captures];
+    newCaptures.splice(index, 1);
+    setCaptures(newCaptures);
+    
+    // Update the current file to the last capture, or null if none left
+    if (newCaptures.length > 0) {
+      setFile(newCaptures[newCaptures.length - 1].file);
+    } else {
+      setFile(null);
+    }
+  };
+  
+  const handleSwitchInputMethod = (method) => {
+    setInputMethod(method);
+    
+    // Reset state for the other method
+    if (method === 'upload') {
+      setCaptures([]);
+    } else {
+      setPreview('');
+      setFile(null);
+    }
   };
   
   const handleSubmit = async (e) => {
@@ -29,7 +73,9 @@ const RegisterFace = () => {
     }
     
     if (!file) {
-      setError('Please upload an image');
+      setError(inputMethod === 'upload' 
+               ? 'Please upload an image'
+               : 'Please capture a photo with your webcam');
       return;
     }
     
@@ -47,6 +93,7 @@ const RegisterFace = () => {
       setUsername('');
       setFile(null);
       setPreview('');
+      setCaptures([]);
       
       // Hide success message after 5 seconds
       setTimeout(() => {
@@ -95,22 +142,58 @@ const RegisterFace = () => {
             </div>
           </div>
           
-          <div className={styles.field}>
-            <label className={styles.label}>Upload your photo</label>
-            <UploadImage
-              id="face-upload"
-              preview={preview}
-              onFileChange={handleFileChange}
-              icon="photo_camera"
-              accept="image/jpeg,image/png"
-            />
+          <div className={styles.inputMethodToggle}>
+            <button 
+              type="button"
+              className={`${styles.methodButton} ${inputMethod === 'upload' ? styles.active : ''}`}
+              onClick={() => handleSwitchInputMethod('upload')}
+            >
+              <span className="material-icons">upload</span>
+              Upload Photo
+            </button>
+            <button 
+              type="button"
+              className={`${styles.methodButton} ${inputMethod === 'webcam' ? styles.active : ''}`}
+              onClick={() => handleSwitchInputMethod('webcam')}
+            >
+              <span className="material-icons">videocam</span>
+              Use Webcam
+            </button>
           </div>
+          
+          {inputMethod === 'upload' ? (
+            <div className={styles.field}>
+              <label className={styles.label}>Upload your photo</label>
+              <UploadImage
+                id="face-upload"
+                preview={preview}
+                onFileChange={handleFileChange}
+                icon="photo_camera"
+                accept="image/jpeg,image/png"
+              />
+            </div>
+          ) : (
+            <div className={styles.field}>
+              <label className={styles.label}>Take a photo with your webcam</label>
+              <WebcamPreview
+                ref={webcamRef}
+                onCapture={handleCaptureFromWebcam}
+                captures={captures}
+                onRemoveCapture={handleRemoveCapture}
+              />
+              {captures.length === 0 && (
+                <p className={styles.hint}>
+                  Click the capture button to take a photo
+                </p>
+              )}
+            </div>
+          )}
           
           <div className={styles.buttonWrapper}>
             <button
               type="submit"
               className={styles.button}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !file}
             >
               {isSubmitting ? 'Registering...' : 'Register Face'}
             </button>
