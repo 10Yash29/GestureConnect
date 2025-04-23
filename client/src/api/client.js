@@ -1,12 +1,10 @@
-const BASE_URL = import.meta.env.VITE_API_BASE || 'https://gesture-backend-wrn9.onrender.com';
+const BASE_URL = 'https://gesture-backend-wrn9.onrender.com';
 
-// Add CORS headers to all requests
 const defaultOptions = {
   mode: 'cors',
-  credentials: 'include',
   headers: {
     'Accept': 'application/json',
-    'Access-Control-Allow-Origin': '*'
+    'Content-Type': 'application/json'
   }
 };
 
