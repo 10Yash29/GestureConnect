@@ -6,6 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  isAdmin: boolean("isAdmin").notNull().default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
