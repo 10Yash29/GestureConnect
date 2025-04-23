@@ -1,0 +1,105 @@
+.container {
+  width: 100%;
+}
+
+.webcamContainer {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-neutral-100);
+}
+
+.webcam {
+  width: 100%;
+  height: 16rem;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(33, 37, 41, 0.5);
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 0.25rem solid var(--color-neutral-200);
+  border-top-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  animation: spin 1.5s linear infinite;
+}
+
+.captureButtonContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.captureButton {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  transition: background-color 0.2s;
+}
+
+.captureButton .material-icons {
+  margin-right: 0.25rem;
+}
+
+.captureButton:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.capturesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.captureItem {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+}
+
+.captureImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.removeButton {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-error);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+}
+
+.removeButton .material-icons {
+  font-size: 0.75rem;
+}

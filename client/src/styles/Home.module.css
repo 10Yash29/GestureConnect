@@ -1,0 +1,165 @@
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.title span {
+  display: block;
+}
+
+.highlight {
+  color: var(--color-primary);
+  margin-top: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--color-neutral-600);
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.primaryButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.secondaryButton:hover {
+  background-color: var(--color-neutral-100);
+  transform: translateY(-2px);
+}
+
+.steps {
+  margin-top: 3rem;
+}
+
+.stepsTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.step {
+  background-color: var(--color-white);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.step:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.stepIconSecondary {
+  background-color: var(--color-secondary);
+}
+
+.stepIconAccent {
+  background-color: var(--color-accent);
+}
+
+.stepTitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.stepDescription {
+  color: var(--color-neutral-600);
+  margin-bottom: 1rem;
+}
+
+.stepLink {
+  color: var(--color-primary);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.stepLink:hover {
+  color: var(--color-primary-hover);
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+  
+  .subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .stepsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

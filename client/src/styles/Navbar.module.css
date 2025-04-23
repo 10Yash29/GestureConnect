@@ -1,0 +1,130 @@
+.navbar {
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-md);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoIcon {
+  color: var(--color-primary);
+  font-size: 1.75rem;
+  margin-right: 0.5rem;
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+.desktopLinks {
+  display: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.5rem;
+  color: var(--color-neutral-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.navLink:hover {
+  color: var(--color-neutral-800);
+  border-bottom-color: var(--color-neutral-300);
+}
+
+.navLink.active {
+  color: var(--color-neutral-900);
+  border-bottom-color: var(--color-primary);
+}
+
+.mobileMenuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: var(--color-neutral-600);
+  background-color: transparent;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.mobileMenuButton:hover {
+  color: var(--color-neutral-900);
+  background-color: var(--color-neutral-100);
+}
+
+.mobileMenu {
+  display: none;
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.mobileMenuOpen {
+  display: block;
+}
+
+.mobileMenuLinks {
+  padding: 0.5rem 0;
+}
+
+.mobileLink {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: var(--color-neutral-600);
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: background-color 0.2s, color 0.2s, border-left-color 0.2s;
+}
+
+.mobileLink:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-800);
+  border-left-color: var(--color-neutral-300);
+}
+
+.mobileLink.mobileActive {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+  border-left-color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .desktopLinks {
+    display: flex;
+  }
+  
+  .mobileMenuButton {
+    display: none;
+  }
+  
+  .mobileMenu {
+    display: none !important;
+  }
+}

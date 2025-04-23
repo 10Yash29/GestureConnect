@@ -1,0 +1,119 @@
+.container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-neutral-900);
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.success {
+  background-color: rgba(52, 168, 83, 0.2);
+  border: 1px solid var(--color-secondary);
+  color: var(--color-neutral-900);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  position: relative;
+}
+
+.error {
+  background-color: rgba(234, 67, 53, 0.2);
+  border: 1px solid var(--color-error);
+  color: var(--color-neutral-900);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  position: relative;
+}
+
+.alertTitle {
+  font-weight: 700;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-neutral-900);
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+}
+
+.input::placeholder {
+  color: var(--color-neutral-400);
+}
+
+.buttonWrapper {
+  margin-top: 1rem;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 1.5rem;
+  }
+}
