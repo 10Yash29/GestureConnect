@@ -13,15 +13,11 @@ const Home = () => {
           Train a personalized system to recognize your face and respond to your hand gestures. Control your computer naturally.
         </p>
         <div className={styles.buttons}>
-          <Link href="/register-face">
-            <a className={styles.primaryButton}>
+          <Link href="/register-face" className={styles.primaryButton}>
               Get Started
-            </a>
           </Link>
-          <Link href="/live-demo">
-            <a className={styles.secondaryButton}>
+          <Link href="/live-demo" className={styles.secondaryButton}>
               Live Demo
-            </a>
           </Link>
         </div>
       </div>
@@ -38,9 +34,7 @@ const Home = () => {
             <p className={styles.stepDescription}>
               Upload a photo of your face to allow the system to recognize you.
             </p>
-            <Link href="/register-face">
-              <a className={styles.stepLink}>Register Now →</a>
-            </Link>
+            <Link href="/register-face" className={styles.stepLink}>Register Now →</Link>
           </div>
 
           {/* Step 2 */}
@@ -52,9 +46,7 @@ const Home = () => {
             <p className={styles.stepDescription}>
               Upload images of your hand gestures and assign keyboard actions to them.
             </p>
-            <Link href="/collect-gesture">
-              <a className={styles.stepLink}>Collect Gestures →</a>
-            </Link>
+            <Link href="/collect-gesture" className={styles.stepLink}>Collect Gestures →</Link>
           </div>
 
           {/* Step 3 */}
@@ -66,9 +58,7 @@ const Home = () => {
             <p className={styles.stepDescription}>
               Train the AI model with your collected data to recognize your gestures.
             </p>
-            <Link href="/train-model">
-              <a className={styles.stepLink}>Train Model →</a>
-            </Link>
+            <Link href="/train-model" className={styles.stepLink}>Train Model →</Link>
           </div>
         </div>
       </div>
