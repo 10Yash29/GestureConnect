@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_BASE || window.location.origin;
+const BASE_URL = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
 /**
  * Handles API requests with error handling
